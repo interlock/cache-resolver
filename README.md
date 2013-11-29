@@ -6,6 +6,8 @@ Describe a graph of dependencies, notify about a change in a dependency and noti
 Setup
 =====
 ```
+
+// define an entity to have a cacheable property
 var Cachie = require('cachie');
 Cachie.entity('Invoice',{
   'total': {
@@ -20,25 +22,37 @@ Cachie.entity('Invoice',{
   }
 });
 
+// set the property
 cachie.set({
   entity: 'Invoice',
   property: 'total',
   value: 0,
-  timeout: inf,
-  
+  timeout: inf
 });
 
+// get the property
+var total = cache.get({entity: 'Invoice', property: 'total'});
+
+// invalidate it
 cachie.broadcast({
   entity: 'InvoiceLineItem'
   event: 'create'
 });
+
+// add a property to an entity
+cachie.entity('Invoice').addProperty('number_of_items',{
+  timeout: inf,
+  deps: [
+    {
+      type: 'event',
+      entity: 'InvoiceLineItem',
+      event: 'create'
+    }
+  ]
+});
+}
 ```  
 
-
-Graph
-=====
-
-cachie.('/Event/:id',
 
 Expectation
 ===========
